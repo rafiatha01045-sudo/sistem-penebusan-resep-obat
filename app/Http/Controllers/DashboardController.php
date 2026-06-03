@@ -12,6 +12,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $role = auth()->user()->role;
+        
         $totalObat = Obat::count();
         $totalTransaksi = Transaksi::count();
         $totalUser = User::count();
@@ -31,7 +33,22 @@ class DashboardController extends Controller
         }
 
         $stokObat = Obat::select('nama_obat', 'stok')->orderBy('stok', 'asc')->limit(5)->get();
+        
+        // Data Khusus Kasir
+        $pendapatanHariIni = 0;
+        $totalTransaksiHariIni = 0;
+        $transaksiTerbaru = collect();
+        
+        if ($role === 'kasir' || $role === 'admin') {
+            $pendapatanHariIni = Transaksi::whereDate('tgl_transaksi', date('Y-m-d'))->sum('total_harga');
+            $totalTransaksiHariIni = Transaksi::whereDate('tgl_transaksi', date('Y-m-d'))->count();
+            $transaksiTerbaru = Transaksi::with('user')->orderBy('created_at', 'desc')->limit(5)->get();
+        }
 
-        return view('dashboard.index', compact('totalObat', 'totalTransaksi', 'totalUser', 'totalResep', 'labels', 'data', 'stokObat'));
+        return view('dashboard.index', compact(
+            'totalObat', 'totalTransaksi', 'totalUser', 'totalResep', 
+            'labels', 'data', 'stokObat',
+            'pendapatanHariIni', 'totalTransaksiHariIni', 'transaksiTerbaru'
+        ));
     }
 }

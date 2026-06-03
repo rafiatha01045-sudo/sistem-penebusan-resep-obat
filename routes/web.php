@@ -10,6 +10,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
+
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -47,7 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('kategori/{kategori}', [KategoriObatController::class, 'show'])->name('kategori.show');
     Route::get('obat', [ObatController::class, 'index'])->name('obat.index');
     Route::get('obat/{obat}', [ObatController::class, 'show'])->name('obat.show');
-    
+
     // Resep (Bisa dilihat Admin, Apoteker, Kasir)
     Route::get('resep', [ResepController::class, 'index'])->name('resep.index');
     Route::get('resep/{resep}', [ResepController::class, 'show'])->name('resep.show');
@@ -57,4 +59,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('transaksi/{transaksi}', [TransaksiController::class, 'show'])->name('transaksi.show');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
